@@ -56,7 +56,8 @@ def checks(C):
     d = lambda i, j: math.sqrt(abs(C[i][i] * C[j][j]))
     return dict(e_TI=abs(C[1][1] - C[1][2] - 2 * C[3][3]) / (2 * C[3][3]),
                 e_c=max(abs(C[i][j]) / d(i, j) for i, j in ZERO),
-                e_s=max(abs(C[i][j] - C[j][i]) / d(i, j) for i in range(6) for j in range(i + 1, 6)))
+                e_s=max(abs(C[i][j] - C[j][i]) / d(i, j) for i in range(6) for j in range(i + 1, 6)),
+                C13_C12=abs(C[0][2] / C[0][1] - 1), C33_C22=abs(C[2][2] / C[1][1] - 1), C55_C66=abs(C[4][4] / C[5][5] - 1))
 
 
 def fiber_name(E):
@@ -148,8 +149,9 @@ def main():
     order = lambda x: (x['fiber'], x['matrix'], x['rho'], -x['h'])
     comp = [('C11', 0, 0), ('C22', 1, 1), ('C33', 2, 2), ('C12', 0, 1), ('C13', 0, 2), ('C23', 1, 2), ('C44', 3, 3), ('C55', 4, 4), ('C66', 5, 5)]
     write_csv(os.path.join(OUT, 'data/stiffness.csv'),
-              ['fiber', 'matrix', 'rho_f'] + [n + ' [MPa]' for n, _, _ in comp] + ['e_TI', 'e_c', 'e_s'],
-              [[x['fiber'], x['matrix'], x['rho']] + [x['C'][i][j] for _, i, j in comp] + [x['checks'][k] for k in ('e_TI', 'e_c', 'e_s')]
+              ['fiber', 'matrix', 'rho_f'] + [n + ' [MPa]' for n, _, _ in comp] + ['e_TI', 'e_c', 'e_s', '|C13/C12-1|', '|C33/C22-1|', '|C55/C66-1|'],
+              [[x['fiber'], x['matrix'], x['rho']] + [x['C'][i][j] for _, i, j in comp]
+               + [x['checks'][k] for k in ('e_TI', 'e_c', 'e_s', 'C13_C12', 'C33_C22', 'C55_C66')]
                for x in sorted(cases, key=order)])
     law = {(l['fiber'], l['matrix']): l for l in laws}
 

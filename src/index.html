@@ -101,7 +101,7 @@
 
   <section id="mesh" aria-labelledby="h-mesh">
     <h2 id="h-mesh"><span class="num">3</span>Mesh check</h2>
-    <p class="sec-ref">Paper, Fig. meshconv. Carbon fiber, Ogden matrix, seven element sizes from <i>s</i>/12.5 to <i>s</i>/100</p>
+    <p class="sec-ref">Paper, Section 5.1. Carbon fiber, Ogden matrix, seven element sizes from <i>s</i>/12.5 to <i>s</i>/100</p>
     <p>Magnitude of the change of each quantity relative to the finest mesh <i>h</i>&nbsp;=&nbsp;<i>s</i>/100, as in the paper. The dashed line is the selected size <i>s</i>/50; finer meshes lie in the shaded region.
       Halving it changes C<sub>11</sub> and &gamma; by at most 0.13&nbsp;% and C<sub>44</sub> by 0.17&nbsp;%.</p>
     <div class="grid g4" id="mesh-charts"></div>
@@ -114,10 +114,12 @@
       <label class="check"><input type="checkbox" id="logy" checked> Logarithmic stiffness axis</label>
     </div>
     <div class="grid g3" id="stiff-charts"></div>
-    <h3>Transverse-isotropy residuals</h3>
-    <p>e<sub>TI</sub> measures C<sub>22</sub>&nbsp;&minus;&nbsp;C<sub>23</sub>&nbsp;=&nbsp;2C<sub>44</sub>, e<sub>c</sub> the couplings that vanish
-      for a transversely isotropic material and e<sub>s</sub> the deviation from major symmetry (Eq. ti_checks), computed here from the stored matrices.</p>
-    <div class="grid g3" id="resid-charts"></div>
+    <h3>Is every C transversely isotropic?</h3>
+    <p>Yes, to numerical accuracy. The table checks the relations a transversely isotropic C must satisfy, as maxima over
+      all fiber volume fractions: e<sub>TI</sub> measures C<sub>22</sub>&nbsp;&minus;&nbsp;C<sub>23</sub>&nbsp;=&nbsp;2C<sub>44</sub>,
+      e<sub>c</sub> the components that must vanish and e<sub>s</sub> the deviation from major symmetry, each relative to the diagonal
+      (paper, Sections&nbsp;3.4 and 5.2). The values of each configuration are in its detail view.</p>
+    <div class="scroll"><table class="resid" id="resid-table"></table></div>
   </section>
 
   <section id="parameters" aria-labelledby="h-params">
@@ -131,7 +133,7 @@
 
   <section id="hybrid" aria-labelledby="h-hybrid">
     <h2 id="h-hybrid"><span class="num">6</span>Closed form and hybrid against FE</h2>
-    <p class="sec-ref">Paper, Section 5.5, Tables lawdev and nn</p>
+    <p class="sec-ref">Paper, Section 5.5</p>
     <p>Relative deviation of the closed form (solid) and of the hybrid model, closed form plus neural-network correction (dashed), from the identified
       parameters. The network corrects &mu;<sub>L</sub>, &mu;<sub>T</sub> and &gamma;; &lambda; and &beta; keep the closed form.</p>
     <div class="grid g3" id="dev-charts"></div>

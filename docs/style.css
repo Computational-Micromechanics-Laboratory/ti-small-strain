@@ -172,6 +172,11 @@ table { border-collapse: collapse; font: 14px/1.45 var(--sans); }
 .legend i.dotkey { width: 8px; height: 8px; border: 0; border-radius: 50%; }
 .legend i.dash { border-top-style: dashed; }
 
+.resid { font-variant-numeric: tabular-nums; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; }
+.resid th, .resid td { padding: 8px 14px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--grid); }
+.resid thead th { font-weight: 500; color: var(--muted); }
+.resid th.l { text-align: left; font-weight: 500; }
+
 /* run table */
 .toolbar input[type=search] { font: 14px var(--sans); padding: 8px 10px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); min-width: 260px; }
 .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); max-height: 640px; }

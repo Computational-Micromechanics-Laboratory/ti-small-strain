@@ -173,7 +173,7 @@ const isSel = (c) => (p) => p[2] && p[2].fiber === state.fiber && near(p[2].rho,
 /* ---------- sections ---------- */
 function renderLedger() {
   const n = SITE.cases.length, nm = SITE.mesh.length;
-  const eti = Math.max(...SITE.cases.filter((c) => c.rho > 0).map((c) => c.checks.e_TI));
+  const eti = Math.max(...SITE.cases.map((c) => c.checks.e_TI));
   const steps = [
     ['model', 'Cell and virtual tests', '6 tests', 'Hexagonal periodic cell; each strain state gives one column of C'],
     ['design', 'Study design', `${n} configurations`, `15 &rho;<sub>f</sub> &times; 2 fibers &times; 2 matrices, ${6 * n} FE computations`],
@@ -237,14 +237,15 @@ function renderStiffness() {
       onPick: pickCase,
     });
   });
-  const rb = $('#resid-charts');
-  const R = [['e_TI', 'e<sub>TI</sub>'], ['e_c', 'e<sub>c</sub>'], ['e_s', 'e<sub>s</sub>']];
-  rb.innerHTML = R.map(() => '<div class="chart"></div>').join('');
-  R.forEach(([k, h], n) => chart(rb.children[n], {
-    title: h, ylog: true, xlabel: XL, xname: 'ρf', yname: k, cursor: rho(), yfmt: (v) => fmt(v, 3),
-    series: FIBERS.map((f) => ({ label: f, color: fcol(f), dots: true, sel: isSel(), pts: cases(f).map((c) => [c.rho, c.checks[k], c]) })),
-    onPick: pickCase,
-  }));
+}
+
+function renderResiduals() {
+  const R = [['e_TI', 'e<sub>TI</sub>'], ['e_c', 'e<sub>c</sub>'], ['e_s', 'e<sub>s</sub>'], ['C13_C12', '|C<sub>13</sub>/C<sub>12</sub>&nbsp;&minus;&nbsp;1|'],
+    ['C33_C22', '|C<sub>33</sub>/C<sub>22</sub>&nbsp;&minus;&nbsp;1|'], ['C55_C66', '|C<sub>55</sub>/C<sub>66</sub>&nbsp;&minus;&nbsp;1|']];
+  const rows = ['ogden', 'neo_hooke'].flatMap((m) => FIBERS.map((f) => [f, m]));
+  const v = (k, x) => (k === 'e_TI' ? pct(x, 2) : fmt(x, 2));
+  $('#resid-table').innerHTML = `<thead><tr><th class="l">Constituents</th>${R.map(([, h]) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(([f, m]) =>
+    `<tr><th class="l" scope="row">${MATRIX_NAME[m]}, ${f}</th>${R.map(([k]) => `<td>${v(k, Math.max(...cases(f, m).map((c) => c.checks[k])))}</td>`).join('')}</tr>`).join('')}</tbody>`;
 }
 
 const PARAMS = ['lambda', 'mu_L', 'mu_T', 'beta', 'gamma'];
@@ -425,7 +426,7 @@ async function init() {
   $('#drawer-close').onclick = closeRun; $('#backdrop').onclick = closeRun;
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#drawer').hidden) closeRun(); });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', update);
-  renderLedger(); renderTests(); update(); watchSteps();
+  renderLedger(); renderTests(); renderResiduals(); update(); watchSteps();
   const route = () => { const m = /^#run\/([a-z0-9.-]+)$/.exec(location.hash); if (m) openRun(m[1]); };
   addEventListener('hashchange', route);
   route();
