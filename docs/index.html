@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Areal confinement data</title>
+<meta name="description" content="Every finite element run, stiffness matrix and identified parameter behind the paper on the areal-confinement formulation for transversely isotropic solids.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -1 2 2'%3E%3Cpolygon points='1,0 .5,.866 -.5,.866 -1,0 -.5,-.866 .5,-.866' fill='%23e3c27a'/%3E%3Ccircle r='.55' fill='%231c7c8c'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the data</a>
+
+<aside class="rail" aria-label="Selected run">
+  <div class="rail-inner">
+    <nav class="steps" aria-label="Study steps">
+      <p class="rail-title">The study, step by step</p>
+      <ol id="step-nav">
+        <li><a href="#model"><b>1</b>Cell and virtual tests</a></li>
+        <li><a href="#design"><b>2</b>Study design</a></li>
+        <li><a href="#mesh"><b>3</b>Mesh check</a></li>
+        <li><a href="#stiffness"><b>4</b>Effective stiffness</a></li>
+        <li><a href="#parameters"><b>5</b>Identification</a></li>
+        <li><a href="#hybrid"><b>6</b>Closed form and hybrid</a></li>
+        <li class="aux"><a href="#runs">All runs</a></li>
+        <li class="aux"><a href="#data">Data</a></li>
+      </ol>
+    </nav>
+    <p class="rail-title">Selected configuration</p>
+    <svg id="cell" class="cell" viewBox="-1.45 -1.3 2.9 2.6" role="img" aria-label="Cross-section of the periodic hexagonal cell at the selected fiber volume fraction"></svg>
+    <div class="control">
+      <label for="rho">Fiber volume fraction <span class="sym">&rho;<sub>f</sub></span></label>
+      <output id="rho-out" for="rho">0.40</output>
+      <input id="rho" type="range" min="0" max="14" step="1" value="8">
+    </div>
+    <div class="control seg" role="radiogroup" aria-label="Fiber">
+      <button type="button" data-fiber="E-glass" role="radio">E-glass</button>
+      <button type="button" data-fiber="carbon" role="radio">Carbon</button>
+    </div>
+    <div class="control seg" role="radiogroup" aria-label="Matrix">
+      <button type="button" data-matrix="ogden" role="radio">Ogden</button>
+      <button type="button" data-matrix="neo_hooke" role="radio">Neo-Hooke</button>
+    </div>
+    <dl id="readout" class="readout"></dl>
+    <button type="button" id="open-current" class="link-btn">Open this run</button>
+  </div>
+</aside>
+
+<main id="main">
+  <header class="intro">
+    <h1>A small-strain areal-confinement formulation for transversely isotropic solids</h1>
+    <p class="authors">Doruk Onat Y&inodot;ld&inodot;r&inodot;m, Ahmet Hakan Karaahmet, Berkant Alperen, H&uuml;sn&uuml; Dal</p>
+    <p class="lede">The numbers behind Section&nbsp;5 and Appendix&nbsp;B: every virtual test computed for the paper, the
+      effective stiffness it gave, the parameters identified from it and their comparison with the closed-form and
+      hybrid parameter functions. Move the fiber volume fraction on the left; every plot marks the selected configuration.</p>
+    <ol class="flow" id="flow"></ol>
+  </header>
+
+  <section id="model" aria-labelledby="h-model">
+    <h2 id="h-model"><span class="num">1</span>Cell and virtual tests</h2>
+    <p class="sec-ref">Paper, Sections 3.2 to 3.4 and 5.1</p>
+    <div class="split">
+      <figure class="rve">
+        <img src="img/fig_hexrve.png" alt="Hexagonal representative volume element with fiber, matrix and periodicity vectors" loading="lazy">
+      </figure>
+      <div>
+        <p>A fiber in a hexagonal periodic cell of edge <i>s</i>&nbsp;=&nbsp;0.05 and length <i>L</i>&nbsp;=&nbsp;0.004 along the fiber, meshed with
+          C3D8RH elements of size <i>h</i>&nbsp;=&nbsp;<i>s</i>/50 (four element layers along the fiber), periodic boundary conditions as
+          <code>*EQUATION</code> constraints. Each virtual test is a linear perturbation step in ABAQUS/Standard 2024 with the strain amplitude
+          &epsilon;<sub>0</sub>&nbsp;=&nbsp;5&times;10<sup>&minus;4</sup> and gives one column of <b>C</b>.</p>
+        <table class="materials">
+          <caption>Constituents</caption>
+          <thead><tr><th scope="col">Phase</th><th scope="col">Parameters</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Matrix, Ogden (N = 3)</th><td>&mu;<sub>1</sub> = 1.8729 MPa, &alpha;<sub>1</sub> = 0.364; &mu;<sub>2</sub> = 7.991 MPa, &alpha;<sub>2</sub> = 2.7063&times;10<sup>&minus;6</sup>; &mu;<sub>3</sub> = &minus;1.8446 MPa, &alpha;<sub>3</sub> = &minus;0.016588; D<sub>1</sub> = 5.6152&times;10<sup>&minus;3</sup> MPa<sup>&minus;1</sup></td></tr>
+            <tr><th scope="row">Matrix, Neo-Hooke</th><td>C<sub>10</sub> = 0.17809 MPa, same D<sub>1</sub> (&mu;<sub>m</sub> = 0.3562 MPa, &kappa;<sub>m</sub> = 1000 &mu;<sub>m</sub>)</td></tr>
+            <tr><th scope="row">Fiber, E-glass</th><td>E<sub>f</sub> = 72.3 GPa, &nu;<sub>f</sub> = 0.22</td></tr>
+            <tr><th scope="row">Fiber, carbon</th><td>E<sub>f</sub> = 228 GPa, &nu;<sub>f</sub> = 0.30 (idealized as isotropic)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tests">
+      <div class="test-tabs" role="tablist" aria-label="Virtual test" id="test-tabs"></div>
+      <figure class="test-view" id="test-view" role="tabpanel"></figure>
+    </div>
+  </section>
+
+  <section id="design" aria-labelledby="h-design">
+    <h2 id="h-design"><span class="num">2</span>Study design</h2>
+    <p class="sec-ref">Paper, Section 5.1</p>
+    <p>A <em>configuration</em> is one cell: one fiber, one matrix and one fiber volume fraction. The study crosses
+      15 fractions (&rho;<sub>f</sub>&nbsp;=&nbsp;0 to 0.7 in steps of 0.05) with 2 fibers and 2 matrices, which gives
+      <b>60 configurations</b>. Each runs the six virtual tests of step&nbsp;1, so <b>360 FE computations</b> give the 60 stiffness matrices.
+      At &rho;<sub>f</sub>&nbsp;=&nbsp;0 the cell is pure matrix; it is computed in each fiber series. Click a cell to select that configuration.</p>
+    <div class="scroll"><table class="matrix" id="design-matrix"></table></div>
+  </section>
+
+  <section id="mesh" aria-labelledby="h-mesh">
+    <h2 id="h-mesh"><span class="num">3</span>Mesh check</h2>
+    <p class="sec-ref">Paper, Fig. meshconv. Carbon fiber, Ogden matrix, seven element sizes from <i>s</i>/12.5 to <i>s</i>/100</p>
+    <p>Magnitude of the change of each quantity relative to the finest mesh <i>h</i>&nbsp;=&nbsp;<i>s</i>/100, as in the paper. The dashed line is the selected size <i>s</i>/50; finer meshes lie in the shaded region.
+      Halving it changes C<sub>11</sub> and &gamma; by at most 0.13&nbsp;% and C<sub>44</sub> by 0.17&nbsp;%.</p>
+    <div class="grid g4" id="mesh-charts"></div>
+  </section>
+
+  <section id="stiffness" aria-labelledby="h-stiffness">
+    <h2 id="h-stiffness"><span class="num">4</span>Effective stiffness</h2>
+    <p class="sec-ref">Paper, Section 5.2 and Table B.1</p>
+    <div class="toolbar">
+      <label class="check"><input type="checkbox" id="logy" checked> Logarithmic stiffness axis</label>
+    </div>
+    <div class="grid g3" id="stiff-charts"></div>
+    <h3>Transverse-isotropy residuals</h3>
+    <p>e<sub>TI</sub> measures C<sub>22</sub>&nbsp;&minus;&nbsp;C<sub>23</sub>&nbsp;=&nbsp;2C<sub>44</sub>, e<sub>c</sub> the couplings that vanish
+      for a transversely isotropic material and e<sub>s</sub> the deviation from major symmetry (Eq. ti_checks), computed here from the stored matrices.</p>
+    <div class="grid g3" id="resid-charts"></div>
+  </section>
+
+  <section id="parameters" aria-labelledby="h-params">
+    <h2 id="h-params"><span class="num">5</span>Identified parameters and closed forms</h2>
+    <p class="sec-ref">Paper, Sections 5.3 and 5.4, Table B.2</p>
+    <p>Dots are the parameters of the proposed model identified from each FE stiffness
+      (&lambda; = C<sub>12</sub>, &mu;<sub>T</sub> = C<sub>44</sub>, &mu;<sub>L</sub> = C<sub>66</sub>, &gamma; = C<sub>23</sub> &minus; C<sub>12</sub>,
+      &beta; = C<sub>11</sub> &minus; C<sub>12</sub> &minus; 4C<sub>66</sub> + 2C<sub>44</sub>); lines are the Hashin&ndash;Shtrikman closed forms of Section 4, which have no fitted constant.</p>
+    <div class="grid g3" id="param-charts"></div>
+  </section>
+
+  <section id="hybrid" aria-labelledby="h-hybrid">
+    <h2 id="h-hybrid"><span class="num">6</span>Closed form and hybrid against FE</h2>
+    <p class="sec-ref">Paper, Section 5.5, Tables lawdev and nn</p>
+    <p>Relative deviation of the closed form (solid) and of the hybrid model, closed form plus neural-network correction (dashed), from the identified
+      parameters. The network corrects &mu;<sub>L</sub>, &mu;<sub>T</sub> and &gamma;; &lambda; and &beta; keep the closed form.</p>
+    <div class="grid g3" id="dev-charts"></div>
+  </section>
+
+  <section id="runs" aria-labelledby="h-runs">
+    <h2 id="h-runs">All runs</h2>
+    <p class="sec-ref">Each row is one configuration; open it for its full stiffness matrix, the six virtual tests and the identified parameters</p>
+    <div class="toolbar" id="run-filters">
+      <div class="seg small" role="radiogroup" aria-label="Study">
+        <button type="button" data-study="main" role="radio">Configurations</button>
+        <button type="button" data-study="mesh" role="radio">Mesh check</button>
+      </div>
+      <input type="search" id="run-search" placeholder="Filter by fiber, matrix or ρf" aria-label="Filter runs">
+      <span id="run-count" class="muted"></span>
+    </div>
+    <div class="table-wrap">
+      <table class="runs" id="run-table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="data" aria-labelledby="h-data">
+    <h2 id="h-data">Data</h2>
+    <div class="split even">
+      <div>
+        <p>Every number on this page can be downloaded. The tables cover the results of Section&nbsp;5; the configuration
+          files hold everything shown for one configuration.</p>
+        <ul class="downloads">
+          <li><a href="data/stiffness.csv" download>stiffness.csv</a><span>Effective stiffness of the 60 configurations and the transverse-isotropy residuals</span></li>
+          <li><a href="data/parameters.csv" download>parameters.csv</a><span>Parameters identified from FE and their closed-form values, per configuration</span></li>
+          <li><a href="data/mesh_convergence.csv" download>mesh_convergence.csv</a><span>C<sub>11</sub>, C<sub>22</sub>, C<sub>44</sub> and &gamma; on the seven meshes of the mesh check</span></li>
+          <li><a href="data/configurations.zip" download>configurations.zip</a><span>One JSON file per configuration: full C, the six virtual tests with the averaged stresses, checks, engineering constants, identified parameters</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Conventions</h3>
+        <dl class="kv conv">
+          <div><dt>Axes</dt><dd>1 along the fiber, 2 and 3 in the plane of isotropy</dd></div>
+          <div><dt>Voigt order</dt><dd>11, 22, 33, 23, 13, 12</dd></div>
+          <div><dt>Shear strains</dt><dd>engineering, 2&epsilon;<sub>ij</sub></dd></div>
+          <div><dt>Units</dt><dd>stiffness and parameters in MPa, lengths in mm</dd></div>
+          <div><dt>Configuration names</dt><dd>fiber-matrix-&rho;<sub>f</sub>, e.g. carbon-ogden-0.40; other meshes of the mesh check end in -sh<i>N</i> for <i>h</i>&nbsp;=&nbsp;<i>s</i>/<i>N</i></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>Supplementary data of the paper by Y&inodot;ld&inodot;r&inodot;m, Karaahmet, Alperen and Dal. All results computed with ABAQUS/Standard 2024.</p>
+  </footer>
+</main>
+
+<div class="drawer-backdrop" id="backdrop" hidden></div>
+<aside class="drawer" id="drawer" aria-labelledby="drawer-title" role="dialog" aria-modal="true" hidden>
+  <header class="drawer-head">
+    <h2 id="drawer-title"></h2>
+    <button type="button" class="close" id="drawer-close" aria-label="Close">&times;</button>
+  </header>
+  <div class="drawer-body" id="drawer-body"></div>
+</aside>
+
+<div class="tip" id="tip" role="status" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
