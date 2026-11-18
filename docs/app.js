@@ -66,7 +66,8 @@ function drawCell() {
     svg.dataset.ready = 1;
     void ns;
   }
-  svg.querySelectorAll('.fiber').forEach((c) => { c.setAttribute('r', r); c.style.fill = col; });
+  // no transition on r: it stalled in Chrome and left the drawn fiber at an old fraction
+  svg.querySelectorAll('.fiber').forEach((c) => { c.setAttribute('r', r); c.style.r = `${r}px`; c.style.fill = col; });
 }
 
 /* ---------- charts ---------- */

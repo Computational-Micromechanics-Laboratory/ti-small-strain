@@ -54,7 +54,7 @@ sub, sup { line-height: 0; }
 .cell .tile { fill: var(--matrix); stroke: var(--matrix-edge); stroke-width: 0.012; opacity: 0.28; }
 .cell .tile-fiber { opacity: 0.22; }
 .cell .main { fill: var(--matrix); stroke: var(--matrix-edge); stroke-width: 0.014; }
-.cell .fiber { transition: r 260ms cubic-bezier(.3,.7,.2,1), fill 200ms; }
+.cell .fiber { transition: fill 200ms; }
 .cell .dim { stroke: var(--muted); stroke-width: 0.008; fill: none; }
 .cell text { font: 0.11px var(--sans); fill: var(--muted); }
 .control { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 6px 10px; }
