@@ -172,16 +172,28 @@ const pickCase = (c) => { state.fiber = c.fiber; state.matrix = c.matrix; state.
 const isSel = (c) => (p) => p[2] && p[2].fiber === state.fiber && near(p[2].rho, rho());
 
 /* ---------- sections ---------- */
+/* largest deviation from FE over the fractions and fibers, closed form alone and with the NN correction */
+function hybridGain() {
+  const mx = (p, kind) => Math.max(...SITE.nn[p].filter((s) => s.kind === kind).flatMap((s) => s.points.map((q) => Math.abs(q[1]))));
+  return ['mu_T', 'mu_L', 'gamma'].map((p) => ({ p, cf: mx(p, 'cf'), nn: mx(p, 'nn') }));
+}
+function renderGain() {
+  $('#hybrid-gain').innerHTML = hybridGain().map((g) => `<div><dt>Largest deviation of ${PH[g.p]}</dt>
+    <dd>${fmt(g.cf, 2)}&nbsp;% <span class="to">&rarr;</span> ${fmt(g.nn, 2)}&nbsp;%<small>closed form &rarr; hybrid</small></dd></div>`).join('');
+}
+
 function renderLedger() {
   const n = SITE.cases.length, nm = SITE.mesh.length;
   const eti = Math.max(...SITE.cases.map((c) => c.checks.e_TI));
+  const g = hybridGain().find((x) => x.p === 'mu_T');
   const steps = [
-    ['model', 'Cell and virtual tests', '6 tests', 'Hexagonal periodic cell; each strain state gives one column of C'],
-    ['design', 'Study design', `${n} configurations`, `15 &rho;<sub>f</sub> &times; 2 fibers &times; 2 matrices, ${6 * n} FE computations`],
-    ['mesh', 'Mesh check', '<i>h</i> = <i>s</i>/50', `Within 0.17&nbsp;% of <i>s</i>/100; ${nm} meshes`],
-    ['stiffness', 'Effective stiffness', `e<sub>TI</sub> &le; ${pct(eti, 2)}`, 'Every C is transversely isotropic to numerical accuracy'],
-    ['parameters', 'Identification', '5 parameters', '&lambda;, &mu;<sub>T</sub>, &mu;<sub>L</sub>, &gamma;, &beta; read off C, against closed forms'],
-    ['hybrid', 'Closed form and hybrid', 'FE deviation', 'Closed forms alone and with the neural-network correction'],
+    ['model', 'Cell and virtual tests', '6 tests', 'One strain state each; every test gives one column of C'],
+    ['design', 'Study design', `${n} configurations`, '15 fiber fractions &times; 2 fibers &times; 2 matrices'],
+    ['mesh', 'Mesh check', '<i>h</i> = <i>s</i>/50', `Within 0.17&nbsp;% of the finest of ${nm / 3} meshes, <i>s</i>/100`],
+    ['stiffness', 'Effective stiffness', `e<sub>TI</sub> &le; ${pct(eti, 2)}`, 'Every C is transversely isotropic'],
+    ['parameters', 'Identification', '5 parameters', '&lambda;, &mu;<sub>T</sub>, &mu;<sub>L</sub>, &gamma;, &beta; read directly off C'],
+    ['hybrid', 'Closed form and hybrid', `${fmt(g.cf, 2)}&nbsp;% <span class="to">&rarr;</span> ${fmt(g.nn, 2)}&nbsp;%`,
+      'Largest deviation of &mu;<sub>T</sub> from FE: closed form alone, then with the <b>neural-network correction</b>'],
   ];
   $('#flow').innerHTML = steps.map(([id, t, k, d], i) => `<li><a href="#${id}"><span class="fn">${i + 1}</span><span class="ft">${t}</span><span class="fk">${k}</span><span class="fd">${d}</span></a></li>`).join('');
 }
@@ -422,7 +434,7 @@ async function init() {
   $('#drawer-close').onclick = closeRun; $('#backdrop').onclick = closeRun;
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#drawer').hidden) closeRun(); });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', update);
-  renderLedger(); renderTests(); renderResiduals(); update(); watchSteps();
+  renderLedger(); renderGain(); renderTests(); renderResiduals(); update(); watchSteps();
   const route = () => { const m = /^#run\/([a-z0-9.-]+)$/.exec(location.hash); if (m) openRun(m[1]); };
   addEventListener('hashchange', route);
   route();
