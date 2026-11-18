@@ -3,10 +3,10 @@ usage: python build.py [PAPER_REPO]
   PAPER_REPO  clone of TI_homogenization_paper (default: ../TI_homogenization_paper). Read from it:
               data/hd_snapshot_2026-11-13.tgz, data/hd_snapshot_2026-11-17_mesh.tgz, figures/nn/nn_curves.json,
               figures/fig_mises_*.png, figures/fig_hexrve.pdf (to PNG with pdftocairo, if on PATH).
-Only the standard library. Copies src/ to docs/ and writes docs/data/ (site.json, one JSON per configuration, CSV
-tables, a zip of all configurations) and docs/img/. The output is meant for readers of the paper: it carries no
+Only the standard library. Copies src/ to docs/ and writes docs/data/ (site.json and one JSON per configuration for
+the page itself, CSV tables as the downloads) and docs/img/. The output is meant for readers of the paper: it carries no
 registry identifiers, hosts or tool settings, only the model, the results and readable configuration names."""
-import csv, json, math, os, shutil, subprocess, sys, tarfile, zipfile
+import csv, json, math, os, shutil, subprocess, sys, tarfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAPER = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, '..', 'TI_homogenization_paper'))
@@ -77,26 +77,13 @@ def record(c):
     h = cfg['mesh']['seed']
     sh = round(S / h, 2)
     C = ds['C']
-    raw = ds.get('raw') or {}
-    tests = []
-    for key, name in TESTS:
-        x = raw.get(key, {})
-        hm = (x.get('checks') or {}).get('hill_mandel') or {}
-        tests.append(dict(test=name, strain=x.get('strain'), stress=x.get('stress_voigt'), column=x.get('column'),
-                          hill_mandel_error=hm.get('rel_error', hm.get('relative_error')),
-                          stress_asymmetry=(x.get('checks') or {}).get('stress_asymmetry')))
     fits = c.get('fits') or {}
     fit = lambda key, names: {k: ((fits.get(key) or {}).get('params') or {}).get(k) for k in names}
-    err = lambda key: ((fits.get(key) or {}).get('residuals') or {}).get('max_rel_error')
     eng = {k: v for k, v in (ds.get('engineering_constants') or {}).items() if k in ('E1', 'E2', 'nu12', 'nu23', 'mu12', 'mu23')}
-    diag = ds.get('stiffness_diagnostics') or {}
     return dict(
         id=slug(fiber, matrix, rho, None if abs(sh - 50) < 1e-6 else sh),
-        fiber=fiber, matrix=matrix, rho=rho, h=h, s_h=sh, s=cfg['geometry']['a'], L=cfg['geometry']['L'],
-        element=cfg['mesh']['element'], strain=cfg['loading']['strain'],
-        C=C, checks=checks(C), engineering=eng, positive_definite=diag.get('positive_definite'), eigenvalues=diag.get('eigenvalues'),
-        tests=tests, proposed=fit('proposed_small_strain', PARAMS), proposed_error=err('proposed_small_strain'),
-        vogler=fit('vogler_small_strain', VOGLER), vogler_error=err('vogler_small_strain'))
+        fiber=fiber, matrix=matrix, rho=rho, h=h, s_h=sh,
+        C=C, checks=checks(C), engineering=eng, proposed=fit('proposed_small_strain', PARAMS), vogler=fit('vogler_small_strain', VOGLER))
 
 
 def summary(x):
@@ -128,9 +115,6 @@ def main():
     for x in cases + [m for m in mcases if m['id'] not in main_ids]:  # the s/50 mesh is the main configuration
         files[x['id']] = json.dumps(rr(x, 12), separators=(',', ':'))
         open(os.path.join(OUT, 'data/configurations', x['id'] + '.json'), 'w').write(files[x['id']])
-    with zipfile.ZipFile(os.path.join(OUT, 'data', 'configurations.zip'), 'w', zipfile.ZIP_DEFLATED) as z:
-        for k, v in sorted(files.items()):
-            z.writestr('configurations/%s.json' % k, v)
 
     laws = []
     for gid in ('GEN-bed55eb8', 'GEN-02682632', 'GEN-892745a1', 'GEN-f197ef0e'):

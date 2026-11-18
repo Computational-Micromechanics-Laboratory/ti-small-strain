@@ -379,19 +379,14 @@ async function openRun(id) {
   const kv = (o, names = {}) => `<dl class="kv">${Object.entries(o).map(([k, v]) => `<div><dt>${names[k] || k}</dt><dd>${typeof v === 'number' ? fmt(v, 6) : v}</dd></div>`).join('')}</dl>`;
   const eng = d.engineering || {};
   const engNames = { E1: 'E<sub>1</sub>', E2: 'E<sub>2</sub>', nu12: '&nu;<sub>12</sub>', nu23: '&nu;<sub>23</sub>', mu12: '&mu;<sub>12</sub>', mu23: '&mu;<sub>23</sub>' };
-  const fit = (label, ps, err) => (ps ? `<h3>${label}</h3><p class="ids">Reproduces C to ${fmt(err, 2)} (largest relative error)</p>` + kv(ps, PH) : '');
-  const tests = `<div class="scroll"><table><thead><tr><th class="l">Virtual test</th><th>Applied strain</th><th>Hill–Mandel error</th><th>Stress asymmetry</th></tr></thead><tbody>${d.tests.map((j, k) =>
-    `<tr><td class="l">${TESTS[k].name} ${TESTS[k].sym}</td><td>${fmt(j.strain, 2)}</td><td>${fmt(j.hill_mandel_error, 2)}</td><td>${fmt(j.stress_asymmetry, 2)}</td></tr>`).join('')}</tbody></table></div>`;
+  const fit = (label, ps, err) => (ps ? `<h3>${label}</h3>` + kv(ps, PH) : '');
   $('#drawer-body').innerHTML = `
-    <p class="ids"><a href="data/configurations/${d.id}.json" download>Download this configuration (JSON)</a></p>
     <h3>Effective stiffness C <small class="muted">MPa, Voigt order 11, 22, 33, 23, 13, 12</small></h3>${cmat}
-    <h3>Checks</h3>${kv({ e_TI: d.checks.e_TI, e_c: d.checks.e_c, e_s: d.checks.e_s, 'positive definite': d.positive_definite ? 'yes' : 'no', 'smallest eigenvalue': Math.min(...(d.eigenvalues || [NaN])) },
+    <h3>Transverse-isotropy residuals</h3>${kv({ e_TI: d.checks.e_TI, e_c: d.checks.e_c, e_s: d.checks.e_s },
       { e_TI: 'e<sub>TI</sub>', e_c: 'e<sub>c</sub>', e_s: 'e<sub>s</sub>' })}
     <h3>Engineering constants</h3>${kv(eng, engNames)}
     ${fit('Proposed model', d.proposed, d.proposed_error)}
-    ${fit('Model of Vogler et al.', d.vogler, d.vogler_error)}
-    <h3>Virtual tests</h3>${tests}
-    <h3>Model</h3>${kv({ 'cell edge s': `${d.s} mm`, 'length L': `${d.L} mm`, 'element size h': `<i>s</i>/${+d.s_h}`, element: d.element, 'strain amplitude ε0': fmt(d.strain, 2) })}`;
+    ${fit('Model of Vogler et al.', d.vogler, d.vogler_error)}`;
   $('#drawer').hidden = false; $('#backdrop').hidden = false;
   $('#drawer-close').focus();
   if (location.hash !== `#run/${id}`) history.replaceState(null, '', `#run/${id}`);

@@ -143,7 +143,7 @@
 
   <section id="runs" aria-labelledby="h-runs">
     <h2 id="h-runs">All runs</h2>
-    <p class="sec-ref">Each row is one configuration; open it for its full stiffness matrix, the six virtual tests and the identified parameters</p>
+    <p class="sec-ref">Each row is one configuration; open it for its full stiffness matrix, engineering constants and identified parameters</p>
     <div class="toolbar" id="run-filters">
       <div class="seg small" role="radiogroup" aria-label="Study">
         <button type="button" data-study="main" role="radio">Configurations</button>
@@ -164,13 +164,11 @@
     <h2 id="h-data">Data</h2>
     <div class="split even">
       <div>
-        <p>Every number on this page can be downloaded. The tables cover the results of Section&nbsp;5; the configuration
-          files hold everything shown for one configuration.</p>
+        <p>The results of Section&nbsp;5 as tables, for reproducing the figures and the identification.</p>
         <ul class="downloads">
           <li><a href="data/stiffness.csv" download>stiffness.csv</a><span>Effective stiffness of the 60 configurations and the transverse-isotropy residuals</span></li>
           <li><a href="data/parameters.csv" download>parameters.csv</a><span>Parameters identified from FE and their closed-form values, per configuration</span></li>
           <li><a href="data/mesh_convergence.csv" download>mesh_convergence.csv</a><span>C<sub>11</sub>, C<sub>22</sub>, C<sub>44</sub> and &gamma; on the seven meshes of the mesh check</span></li>
-          <li><a href="data/configurations.zip" download>configurations.zip</a><span>One JSON file per configuration: full C, the six virtual tests with the averaged stresses, checks, engineering constants, identified parameters</span></li>
         </ul>
       </div>
       <div>
@@ -180,7 +178,6 @@
           <div><dt>Voigt order</dt><dd>11, 22, 33, 23, 13, 12</dd></div>
           <div><dt>Shear strains</dt><dd>engineering, 2&epsilon;<sub>ij</sub></dd></div>
           <div><dt>Units</dt><dd>stiffness and parameters in MPa, lengths in mm</dd></div>
-          <div><dt>Configuration names</dt><dd>fiber-matrix-&rho;<sub>f</sub>, e.g. carbon-ogden-0.40; other meshes of the mesh check end in -sh<i>N</i> for <i>h</i>&nbsp;=&nbsp;<i>s</i>/<i>N</i></dd></div>
         </dl>
       </div>
     </div>
