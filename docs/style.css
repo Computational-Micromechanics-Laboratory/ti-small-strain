@@ -51,8 +51,8 @@ sub, sup { line-height: 0; }
 .rail .sel-head .cell { max-width: none; margin: 0; }
 .rail-title { margin: 0; font: 500 15px/1.3 var(--serif); color: var(--muted); }
 .cell { width: 100%; height: auto; display: block; }
-.cell .tile { fill: var(--matrix); stroke: var(--matrix-edge); stroke-width: 0.012; opacity: 0.28; }
-.cell .tile-fiber { opacity: 0.22; }
+.cell .tile { fill: var(--matrix); stroke: var(--matrix-edge); stroke-width: 0.012; opacity: 0.45; }
+.cell .tile-fiber { opacity: 0.6; }
 .cell .main { fill: var(--matrix); stroke: var(--matrix-edge); stroke-width: 0.014; }
 .cell .fiber { transition: fill 200ms; }
 .cell .dim { stroke: var(--muted); stroke-width: 0.008; fill: none; }
