@@ -298,10 +298,10 @@ function renderReadout() {
   const c = current();
   const rows = c ? [
     ['C<sub>11</sub>', c.C[0]], ['C<sub>22</sub>', c.C[1]], ['C<sub>44</sub>', c.C[4]], ['C<sub>66</sub>', c.C[5]], null,
-    ...PARAMS.map((p) => [PH[p], c.proposed[p]]), null, ['e<sub>TI</sub>', null, pct(c.checks.e_TI, 2)],
+    ...['lambda', 'mu_T', 'mu_L', 'gamma', 'beta'].map((p) => [PH[p], c.proposed[p]]), ['e<sub>TI</sub>', null, pct(c.checks.e_TI, 2)],
   ] : [];
-  $('#readout').innerHTML = rows.map((x) => (x ? `<dt>${x[0]}</dt><dd>${x[2] || fmt(x[1], 5)}</dd>` : '<div class="sep"></div>')).join('')
-    + '<dt></dt><dd class="muted">MPa</dd>';
+  $('#readout').innerHTML = rows.map((x) => (x ? `<dt>${x[0]}</dt><dd>${x[2] || fmt(x[1], 4)}</dd>` : '<div class="sep"></div>')).join('')
+    + '<div class="unit muted">C and parameters in MPa</div>';
   $('#rho-out').textContent = rho().toFixed(2);
   $('#rho').value = state.i;
   $('#rho').setAttribute('aria-valuetext', `rho f = ${rho().toFixed(2)}`);

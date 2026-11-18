@@ -30,11 +30,13 @@
       </ol>
     </nav>
     <p class="rail-title">Selected configuration</p>
-    <svg id="cell" class="cell" viewBox="-1.45 -1.3 2.9 2.6" role="img" aria-label="Cross-section of the periodic hexagonal cell at the selected fiber volume fraction"></svg>
-    <div class="control">
-      <label for="rho">Fiber volume fraction <span class="sym">&rho;<sub>f</sub></span></label>
-      <output id="rho-out" for="rho">0.40</output>
-      <input id="rho" type="range" min="0" max="14" step="1" value="8">
+    <div class="sel-head">
+      <svg id="cell" class="cell" viewBox="-1.45 -1.3 2.9 2.6" role="img" aria-label="Cross-section of the periodic hexagonal cell at the selected fiber volume fraction"></svg>
+      <div class="control">
+        <label for="rho"><span class="sym">&rho;<sub>f</sub></span></label>
+        <output id="rho-out" for="rho">0.40</output>
+        <input id="rho" type="range" min="0" max="14" step="1" value="8" aria-label="Fiber volume fraction">
+      </div>
     </div>
     <div class="control seg" role="radiogroup" aria-label="Fiber">
       <button type="button" data-fiber="E-glass" role="radio">E-glass</button>
