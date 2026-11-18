@@ -104,9 +104,10 @@
   <section id="mesh" aria-labelledby="h-mesh">
     <h2 id="h-mesh"><span class="num">3</span>Mesh check</h2>
     <p class="sec-ref">Paper, Section 5.1. Carbon fiber, Ogden matrix, seven element sizes from <i>s</i>/12.5 to <i>s</i>/100</p>
-    <p>Magnitude of the change of each quantity relative to the finest mesh <i>h</i>&nbsp;=&nbsp;<i>s</i>/100, as in the paper. The dashed line is the selected size <i>s</i>/50; finer meshes lie in the shaded region.
-      Halving it changes C<sub>11</sub> and &gamma; by at most 0.13&nbsp;% and C<sub>44</sub> by 0.17&nbsp;%.</p>
-    <div class="grid g4" id="mesh-charts"></div>
+    <p>Magnitude of the change of the five stiffness components from which the parameters are identified, relative to the finest mesh <i>h</i>&nbsp;=&nbsp;<i>s</i>/100, as in the paper. The dashed line is the selected size <i>s</i>/50; finer meshes lie in the shaded region.
+      Halving it changes C<sub>11</sub> by at most 0.12&nbsp;%, C<sub>44</sub> by at most 0.17&nbsp;%, and C<sub>12</sub>, C<sub>23</sub> and C<sub>66</sub> by at most 0.02&nbsp;%;
+      &gamma;&nbsp;=&nbsp;C<sub>23</sub>&nbsp;&minus;&nbsp;C<sub>12</sub> changes by 0.13&nbsp;% at &rho;<sub>f</sub>&nbsp;=&nbsp;0.05.</p>
+    <div class="grid g3" id="mesh-charts"></div>
   </section>
 
   <section id="stiffness" aria-labelledby="h-stiffness">
@@ -168,7 +169,7 @@
         <ul class="downloads">
           <li><a href="data/stiffness.csv" download>stiffness.csv</a><span>Effective stiffness of the 60 configurations and the transverse-isotropy residuals</span></li>
           <li><a href="data/parameters.csv" download>parameters.csv</a><span>Parameters identified from FE and their closed-form values, per configuration</span></li>
-          <li><a href="data/mesh_convergence.csv" download>mesh_convergence.csv</a><span>C<sub>11</sub>, C<sub>22</sub>, C<sub>44</sub> and &gamma; on the seven meshes of the mesh check</span></li>
+          <li><a href="data/mesh_convergence.csv" download>mesh_convergence.csv</a><span>C<sub>11</sub>, C<sub>12</sub>, C<sub>23</sub>, C<sub>44</sub> and C<sub>66</sub> on the seven meshes of the mesh check</span></li>
         </ul>
       </div>
       <div>

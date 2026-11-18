@@ -206,12 +206,12 @@ function renderTests() {
 function renderMesh() {
   const box = $('#mesh-charts');
   const groups = [0.05, 0.4, 0.7].map((r) => SITE.mesh.filter((c) => near(c.rho, r)).sort((a, b) => b.seed - a.seed));
-  const q = [['C11', (c) => c.C[0]], ['C22', (c) => c.C[1]], ['C44', (c) => c.C[4]], ['gamma', (c) => c.C[3] - c.C[2]]];
+  const q = ['C11', 'C12', 'C23', 'C44', 'C66'].map((k) => [k, (c) => c.C[CK.indexOf(k)]]);   // the identified components, as in the paper
   box.innerHTML = q.map(() => '<div class="chart"></div>').join('');
   const col = css('--carbon');
   q.forEach(([k, f], n) => {
     chart(box.children[n], {
-      title: `Change of ${CH[k] || PH[k]}`, xlog: true, yzero: true, yfrom0: true, xticks: [12.5, 25, 50, 100], xrange: [10, 125],
+      title: `Change of ${CH[k]}`, xlog: true, yzero: true, yfrom0: true, xticks: [12.5, 25, 50, 100], xrange: [10, 125],
       xlabel: 'elements per cell edge  s / h', ylabel: 'change [%]', xname: 's/h', yname: 'change', yfmt: (v) => fmt(v, 3) + ' %',
       mark: 50, shadeFrom: 50,
       series: groups.map((g, j) => {

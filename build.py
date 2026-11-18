@@ -1,7 +1,7 @@
 """Builds the static data page of the paper into docs/ (GitHub Pages: deploy from /docs).
 usage: python build.py [PAPER_REPO]
   PAPER_REPO  clone of TI_homogenization_paper (default: ../TI_homogenization_paper). Read from it:
-              data/hd_snapshot_2026-11-13.tgz, data/hd_snapshot_2026-11-17_mesh.tgz, figures/nn/nn_curves.json,
+              data/hd_snapshot_2026-11-13.tgz, data/hd_snapshot_2026-11-18_mesh.tgz, figures/nn/nn_curves.json,
               figures/fig_mises_*.png, figures/fig_hexrve.pdf (to PNG with pdftocairo, if on PATH).
 Only the standard library. Copies src/ to docs/ and writes docs/data/ (site.json and one JSON per configuration for
 the page itself, CSV tables as the downloads) and docs/img/. The output is meant for readers of the paper: it carries no
@@ -11,7 +11,7 @@ import csv, json, math, os, shutil, subprocess, sys, tarfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAPER = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, '..', 'TI_homogenization_paper'))
 SRC, OUT = os.path.join(HERE, 'src'), os.path.join(HERE, 'docs')
-SNAP_MAIN, SNAP_MESH = 'hd_snapshot_2026-11-13.tgz', 'hd_snapshot_2026-11-17_mesh.tgz'
+SNAP_MAIN, SNAP_MESH = 'hd_snapshot_2026-11-13.tgz', 'hd_snapshot_2026-11-18_mesh.tgz'
 TESTS = [('axial_ut', 'axial tension, strain 11'), ('transverse_axial_ut', 'transverse tension, strain 22'),
          ('transverse_axial_33', 'transverse tension, strain 33'), ('transverse_longitudinal_shear', 'transverse shear, strain 23'),
          ('longitudinal_shear_13', 'longitudinal shear, strain 13'), ('longitudinal_shear', 'longitudinal shear, strain 12')]
@@ -147,8 +147,8 @@ def main():
               [[x['fiber'], x['matrix'], x['rho']] + [x['proposed'][p] for p in PARAMS] + [closed(x, p) for p in PARAMS]
                for x in sorted(cases, key=order)])
     write_csv(os.path.join(OUT, 'data/mesh_convergence.csv'),
-              ['fiber', 'matrix', 'rho_f', 's/h', 'h', 'C11 [MPa]', 'C22 [MPa]', 'C44 [MPa]', 'gamma [MPa]'],
-              [[x['fiber'], x['matrix'], x['rho'], x['s_h'], x['h'], x['C'][0][0], x['C'][1][1], x['C'][3][3], x['C'][1][2] - x['C'][0][1]]
+              ['fiber', 'matrix', 'rho_f', 's/h', 'h', 'C11 [MPa]', 'C12 [MPa]', 'C23 [MPa]', 'C44 [MPa]', 'C66 [MPa]'],
+              [[x['fiber'], x['matrix'], x['rho'], x['s_h'], x['h'], x['C'][0][0], x['C'][0][1], x['C'][1][2], x['C'][3][3], x['C'][5][5]]
                for x in sorted(mcases, key=order)])
 
     for t, _ in TESTS:

@@ -153,7 +153,6 @@ table { border-collapse: collapse; font: 14px/1.45 var(--sans); }
 .check { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
 .grid { display: grid; gap: 18px; }
 .g3 { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
-.g4 { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 
 /* charts */
 .chart { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 12px 6px; }
@@ -249,5 +248,5 @@ table { border-collapse: collapse; font: 14px/1.45 var(--sans); }
 @media (max-width: 520px) {
   body { font-size: 16px; }
   .toolbar input[type=search] { min-width: 0; width: 100%; }
-  .g3, .g4 { grid-template-columns: 1fr; }
+  .g3 { grid-template-columns: 1fr; }
 }
