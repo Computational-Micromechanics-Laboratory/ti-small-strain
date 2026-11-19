@@ -290,12 +290,12 @@ function renderDeviation() {
         const c = cs.find((x) => near(x.rho, w.vf));
         return [w.vf, 100 * (w.predicted[p] / c.proposed[p] - 1), c];
       });
-      series.push({ label: `${f}, closed form`, color: fcol(f), dots: true, sel: isSel(), pts });
+      series.push({ label: `${f}, closed form`, color: fcol(f), dash: true, dots: true, sel: isSel(), pts });
       const nnKey = p === 'gamma' ? 'gamma' : p;
       const nn = (SITE.nn[nnKey] || []).find((s) => s.fiber === f && s.kind === 'nn');
       if (nn) {
         series.push({
-          label: `${f}, hybrid`, tip: `${f}, closed form + NN`, color: fcol(f), dash: true, dots: false,
+          label: `${f}, hybrid`, tip: `${f}, closed form + NN`, color: fcol(f), dots: false,
           pts: nn.points.map(([r, v]) => [r, v, cs.find((x) => near(x.rho, r))]),
         });
       }
